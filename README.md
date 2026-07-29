@@ -6,6 +6,8 @@ A small colourful web tool for combining word lists (quality, item type, compone
 
 Fan-made — not affiliated with or endorsed by Bethesda Softworks or ZeniMax Media. The logo is an original emblem, not the trademarked Elder Scrolls mark.
 
+https://t-eales.github.io/Elderscrolls-Item-Randomiser/
+
 ## Usage
 
 Open `index.html` in a browser, or visit the GitHub Pages site once enabled.
