@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Item Randomiser | Tamriel Forge</title>
+<meta name="description" content="Generate randomised weapons with full stats and cost from quality, material and item-type tables." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="magic-bg"></div>
+
+<header class="site-header">
+  <div class="logo-wrap">
+    <svg class="emblem" viewBox="0 0 120 120" aria-hidden="true">
+      <polygon points="60,4 116,60 60,116 4,60" class="emblem-outer"/>
+      <polygon points="60,20 100,60 60,100 20,60" class="emblem-inner"/>
+      <circle cx="60" cy="60" r="14" class="emblem-core"/>
+      <path class="emblem-wing left" d="M60,60 L18,42 M60,60 L14,60 M60,60 L18,78"/>
+      <path class="emblem-wing right" d="M60,60 L102,42 M60,60 L106,60 M60,60 L102,78"/>
+    </svg>
+    <div class="wordmark">
+      <h1>TAMRIEL FORGE</h1>
+      <p class="subtitle">Item Randomiser</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <ol class="intro">
+    <li>Open a panel below (click its title) if you want to narrow that category down.</li>
+    <li>Tick only the specific options you want — leave a panel closed and untouched to allow anything in it.</li>
+    <li>Click <strong>Randomise</strong> to roll a Quality, Material, Item, and Enchantment, with full stats and cost worked out automatically.</li>
+  </ol>
+
+  <details class="panel" id="panel-quality">
+    <summary><h2>Quality</h2></summary>
+    <div class="chip-grid" id="quality-options"></div>
+  </details>
+
+  <details class="panel" id="panel-material">
+    <summary><h2>Material</h2></summary>
+    <div class="chip-grid" id="material-options"></div>
+  </details>
+
+  <details class="panel" id="panel-enchant">
+    <summary><h2>Enchantment</h2></summary>
+    <div class="chip-grid" id="enchant-options">
+      <label class="chip"><input type="checkbox" value="Mundane" /> Mundane</label>
+      <label class="chip"><input type="checkbox" value="Enchanted" /> Enchanted</label>
+    </div>
+  </details>
+
+  <details class="panel" id="panel-items">
+    <summary><h2>Item Type</h2></summary>
+    <input type="search" id="item-search" placeholder="Filter items by name..." class="item-search" />
+    <div id="item-groups"></div>
+  </details>
+
+  <div class="controls">
+    <button id="randomise-btn" type="button">⚒ Randomise</button>
+    <button id="copy-btn" type="button" class="secondary">Copy</button>
+  </div>
+
+  <section class="output-wrap">
+    <label>Result</label>
+    <div id="output" class="output-box" role="status" aria-live="polite">
+      <p class="placeholder">Your item awaits the forge...</p>
+    </div>
+  </section>
+
+  <p class="hint" id="hint" aria-live="polite"></p>
+</main>
+
+<footer>
+  <p>Fan-made tool for tabletop &amp; MMO worldbuilding. Not affiliated with or endorsed by Bethesda Softworks or ZeniMax Media.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
