@@ -1,5 +1,7 @@
 # Tamriel Forge — Item Randomiser
 
+A small side-project to test the capabilities of my equipment and have fun exploring new coding styles!
+
 A small colourful web tool for combining word lists (quality, item type, component, magic/mundane, material, etc.) into randomised MMO-style item names.
 
 Fan-made — not affiliated with or endorsed by Bethesda Softworks or ZeniMax Media. The logo is an original emblem, not the trademarked Elder Scrolls mark.
