@@ -431,6 +431,7 @@ function randomiseScroll() {
 
   const magicka = computeMagicka(spell.magicka, level.level);
   const magickaText = magicka === null ? 'Varies (see effect)' : magicka;
+  const costToBuyText = magicka === null ? 'Varies (see effect)' : round2(magicka * 3 * 1.5);
   const effectText = renderEffect(spell.effect, level.level);
 
   scrollOutput.innerHTML = `
@@ -439,7 +440,7 @@ function randomiseScroll() {
     <div class="stat-row"><span>School</span><strong>${spell.school}</strong></div>
     <div class="stat-row"><span>Form</span><strong>${spell.form}</strong></div>
     <div class="stat-row"><span>Magicka Cost</span><strong>${magickaText}</strong></div>
-    <div class="stat-row"><span>XP to Learn</span><strong>${level.xp}</strong></div>
+    <div class="stat-row"><span>Cost to Buy</span><strong>${costToBuyText}</strong></div>
     <p class="effect-text">${effectText}</p>
   `;
 }
