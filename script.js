@@ -202,6 +202,7 @@ const armourMaterialContainer = document.getElementById('armour-material-options
 const armourEnchantContainer = document.getElementById('armour-enchant-options');
 const armourGroups = document.getElementById('armour-groups');
 const armourSearch = document.getElementById('armour-search');
+const armourLocationContainer = document.getElementById('armour-location-options');
 const armourOutput = document.getElementById('armour-output');
 const armourHint = document.getElementById('armour-hint');
 
@@ -209,6 +210,7 @@ ARMOR_QUALITY.forEach((q) => buildChip(armourQualityContainer, q.name, q.name));
 ARMOR_MATERIAL_NAMES.forEach((m) => buildChip(armourMaterialContainer, m, m));
 buildGroupedChips(armourGroups, ARMOR_CATEGORY_ORDER, ARMOR_TYPES, 'category');
 bindGroupSearch(armourSearch, armourGroups);
+BODY_LOCATIONS.forEach((loc) => buildChip(armourLocationContainer, loc.name, loc.name));
 
 function randomiseArmour() {
   armourHint.textContent = '';
@@ -228,6 +230,11 @@ function randomiseArmour() {
 
   const allowedMaterialNames = getChecked(armourMaterialContainer);
 
+  const allowedLocationNames = getChecked(armourLocationContainer);
+  const locationPool = allowedLocationNames.length
+    ? BODY_LOCATIONS.filter((l) => allowedLocationNames.includes(l.name))
+    : BODY_LOCATIONS;
+
   if (armourPool.length === 0) {
     armourHint.textContent = 'No armour types match your current filters.';
     return;
@@ -236,6 +243,7 @@ function randomiseArmour() {
   const armour = pickRandom(armourPool);
   const quality = pickRandom(qualityPool);
   const enchantment = pickRandom(enchantPool);
+  const location = pickRandom(locationPool);
 
   const validMaterialNames = ARMOR_MATERIAL_NAMES.filter((m) => ARMOR_MATERIALS[m].weights.includes(armour.category));
   let materialPool = allowedMaterialNames.length
@@ -253,24 +261,26 @@ function randomiseArmour() {
 
   const enchantLevel = enchantment === 'Enchanted' ? 1 + Math.floor(Math.random() * 6) : null;
 
-  renderArmourResult({ armour, quality, enchantment, enchantLevel, materialName, material, materialEnc });
+  renderArmourResult({ armour, quality, enchantment, enchantLevel, materialName, material, materialEnc, location });
 }
 
-function renderArmourResult({ armour, quality, enchantment, enchantLevel, materialName, material, materialEnc }) {
+function renderArmourResult({ armour, quality, enchantment, enchantLevel, materialName, material, materialEnc, location }) {
   const finalAR = armour.ar + material.ar + quality.ar;
 
-  const carriedEnc = round2(armour.totalEnc * (1 + materialEnc) * (1 + quality.enc));
+  const baseEnc = armour.enc[location.key];
+  const carriedEnc = round2(baseEnc * (1 + materialEnc) * (1 + quality.enc));
   const wornEnc = Math.floor(carriedEnc / 2);
 
-  let cost = armour.totalCost * material.costMulti * (1 + quality.cost);
+  let cost = armour.costPerLoc * material.costMulti * (1 + quality.cost);
   if (enchantLevel) cost *= enchantmentCostMultiplier(enchantLevel);
   const costText = round2(cost).toString();
 
   const enchantmentText = enchantLevel ? `Enchanted (Level ${enchantLevel})` : 'Mundane';
 
   armourOutput.innerHTML = `
-    <h3 class="result-title">${quality.name} ${materialName} ${armour.name}</h3>
+    <h3 class="result-title">${quality.name} ${materialName} ${armour.name} (${location.name})</h3>
     <div class="stat-row"><span>Enchantment</span><strong>${enchantmentText}</strong></div>
+    <div class="stat-row"><span>Location</span><strong>${location.name}</strong></div>
     <div class="stat-row"><span>AR</span><strong>${finalAR}</strong></div>
     <div class="stat-row"><span>ENC (Carried)</span><strong>${carriedEnc}</strong></div>
     <div class="stat-row"><span>ENC (Worn)</span><strong>${wornEnc}</strong></div>

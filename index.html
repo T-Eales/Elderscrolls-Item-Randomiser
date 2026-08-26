@@ -49,7 +49,7 @@
       <li><strong>⚔ Weapons</strong> — roll a Quality, Material, Item Type, and Enchantment, with damage, penetration, range, encumbrance and cost worked out automatically.</li>
       <li><strong>🛡 Armour</strong> — roll a Quality, Material, Armour Type, and Enchantment, with AR, encumbrance and cost worked out automatically.</li>
       <li><strong>🔰 Shields</strong> — roll a Quality, Material, Shield Type, Tower upgrade, and Enchantment, with AR, bash damage, ranged defense, encumbrance and cost worked out automatically.</li>
-      <li><strong>🎒 Items</strong> — roll a Quality and an Item Type (clothing, tools, arcane items, livestock, transportation) with encumbrance and cost worked out automatically.</li>
+      <li><strong>🎒 Items</strong> — roll a Quality and an Item Type (clothing, tools, arcane items, books) with encumbrance and cost worked out automatically.</li>
       <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell, with magicka cost, cost to buy, and effect (damage etc.) worked out for that level.</li>
     </ul>
     <p>Pick a tab above to get started. Inside each tab, open a panel and tick only the specific options you want — leave a panel closed and untouched to allow anything in it — then click <strong>Randomise</strong>.</p>
@@ -120,6 +120,11 @@
     <summary><h2>Armour Type</h2></summary>
     <input type="search" id="armour-search" placeholder="Filter armour by name..." class="item-search" />
     <div id="armour-groups"></div>
+  </details>
+
+  <details class="panel" id="panel-armour-location">
+    <summary><h2>Body Location</h2></summary>
+    <div class="chip-grid" id="armour-location-options"></div>
   </details>
 
   <div class="controls">

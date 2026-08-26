@@ -165,6 +165,17 @@ const ARMOR_TYPES = [
 
 const ARMOR_CATEGORY_ORDER = ['Unarmored', 'Light', 'Medium', 'Heavy'];
 
+// Body locations an armor piece can cover. Left/Right Arm both use the `arm` enc value (and
+// likewise for legs) since the source table doesn't distinguish sides.
+const BODY_LOCATIONS = [
+  { name: 'Head', key: 'head' },
+  { name: 'Body', key: 'body' },
+  { name: 'Left Arm', key: 'arm' },
+  { name: 'Right Arm', key: 'arm' },
+  { name: 'Left Leg', key: 'leg' },
+  { name: 'Right Leg', key: 'leg' },
+];
+
 // Armor materials. `enc`/`costMulti` scale the base armor type's totalEnc/totalCost above
 // (costMulti is a straight multiplier, e.g. x9.0; enc is a percentage modifier, e.g. -0.25 = -25%).
 // Malachite and Stalhrim have a different enc modifier depending on the base armor's weight
@@ -484,47 +495,8 @@ const ITEMS = [
   { name: 'Spell Tome (Level 5)', category: 'Spell Tomes', enc: 0, cost: 150, fixedPrice: true },
   { name: 'Spell Tome (Level 6)', category: 'Spell Tomes', enc: 0, cost: 300, fixedPrice: true },
 
-  { name: 'Terrible Alchemical Ingredient', category: 'Alchemical Ingredients', enc: 0, cost: 3, extra: 'Pool 5', fixedPrice: true },
-  { name: 'Poor Alchemical Ingredient', category: 'Alchemical Ingredients', enc: 0, cost: 6, extra: 'Pool 10', fixedPrice: true },
-  { name: 'Common Alchemical Ingredient', category: 'Alchemical Ingredients', enc: 0, cost: 10, extra: 'Pool 20', fixedPrice: true },
-  { name: 'Expensive Alchemical Ingredient', category: 'Alchemical Ingredients', enc: 0, cost: 30, extra: 'Pool 40', fixedPrice: true },
-  { name: 'Extravagant Alchemical Ingredient', category: 'Alchemical Ingredients', enc: 0, cost: 60, extra: 'Pool 80', fixedPrice: true },
-  { name: 'Exquisite Alchemical Ingredient', category: 'Alchemical Ingredients', enc: 0, cost: 180, extra: 'Pool 150', fixedPrice: true },
-
-  // Livestock & Pets
-  { name: 'Fowl', category: 'Livestock & Pets', enc: null, cost: 2 },
-  { name: 'Cat', category: 'Livestock & Pets', enc: null, cost: 4 },
-  { name: 'Dog (pet)', category: 'Livestock & Pets', enc: null, cost: 6 },
-  { name: 'Sheep', category: 'Livestock & Pets', enc: null, cost: 40 },
-  { name: 'Goat', category: 'Livestock & Pets', enc: null, cost: 50 },
-  { name: 'Pig', category: 'Livestock & Pets', enc: null, cost: 60 },
-  { name: 'Calf', category: 'Livestock & Pets', enc: null, cost: 60 },
-  { name: 'Dog (war trained)', category: 'Livestock & Pets', enc: null, cost: 100 },
-  { name: 'Cow', category: 'Livestock & Pets', enc: null, cost: 200 },
-  { name: 'Ox', category: 'Livestock & Pets', enc: null, cost: 300 },
-  { name: 'Netch (betty)', category: 'Livestock & Pets', enc: null, cost: 400 },
-  { name: 'Guar', category: 'Livestock & Pets', enc: null, cost: 500 },
-  { name: 'Bull', category: 'Livestock & Pets', enc: null, cost: 1000 },
-  { name: 'Guar (war trained)', category: 'Livestock & Pets', enc: null, cost: 1000 },
-  { name: 'Netch (bull)', category: 'Livestock & Pets', enc: null, cost: 1200 },
-  { name: 'Horse (riding)', category: 'Livestock & Pets', enc: null, cost: 2000 },
-  { name: 'Horse (heavy draught)', category: 'Livestock & Pets', enc: null, cost: 2800 },
-  { name: 'Horse (war trained)', category: 'Livestock & Pets', enc: null, cost: 6000 },
-  { name: 'Kwama (scrib)', category: 'Livestock & Pets', enc: null, cost: 2 },
-  { name: 'Kwama (forager)', category: 'Livestock & Pets', enc: null, cost: 3 },
-  { name: 'Kwama (queen)', category: 'Livestock & Pets', enc: null, cost: 30000 },
-  { name: 'Silt Strider (riding)', category: 'Livestock & Pets', enc: null, cost: 20000 },
-  { name: 'Silt Strider (war trained)', category: 'Livestock & Pets', enc: null, cost: 25000 },
-
-  // Transportation
-  { name: 'Cart (small)', category: 'Transportation', enc: null, cost: 100 },
-  { name: 'Rowboat', category: 'Transportation', enc: null, cost: 130 },
-  { name: 'Cart (large)', category: 'Transportation', enc: null, cost: 250 },
-  { name: 'Sailboat', category: 'Transportation', enc: null, cost: 350 },
-  { name: 'Ship (small)', category: 'Transportation', enc: null, cost: 30000 },
-  { name: 'Warship (small)', category: 'Transportation', enc: null, cost: 40000 },
-  { name: 'Ship (large)', category: 'Transportation', enc: null, cost: 50000 },
-  { name: 'Warship (large)', category: 'Transportation', enc: null, cost: 60000 },
+  // Books
+  { name: 'Book', category: 'Books', enc: 0, cost: 16 },
 ];
 
 const ITEM_CATEGORY_ORDER = [
@@ -534,7 +506,5 @@ const ITEM_CATEGORY_ORDER = [
   'Soul Gems (Empty)',
   'Soul Gems (Filled)',
   'Spell Tomes',
-  'Alchemical Ingredients',
-  'Livestock & Pets',
-  'Transportation',
+  'Books',
 ];
