@@ -34,6 +34,7 @@
 <nav class="tabs" role="tablist">
   <button class="tab-btn active" type="button" data-tab="welcome" role="tab" aria-selected="true">🏠 Welcome</button>
   <button class="tab-btn" type="button" data-tab="weapons" role="tab" aria-selected="false">⚔ Weapons</button>
+  <button class="tab-btn" type="button" data-tab="items" role="tab" aria-selected="false">🎒 Items</button>
   <button class="tab-btn" type="button" data-tab="scrolls" role="tab" aria-selected="false">📜 Spell Scrolls</button>
 </nav>
 
@@ -44,7 +45,8 @@
     <p>This tool rolls up randomised Elder Scrolls-style items for tabletop &amp; MMO worldbuilding, complete with full stats and cost.</p>
     <ul class="intro">
       <li><strong>⚔ Weapons</strong> — roll a Quality, Material, Item Type, and Enchantment, with damage, penetration, range, encumbrance and cost worked out automatically.</li>
-      <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell and combine them into a scroll name.</li>
+      <li><strong>🎒 Items</strong> — roll a Quality and an Item Type (clothing, tools, arcane items, livestock, transportation) with encumbrance and cost worked out automatically.</li>
+      <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell, with magicka cost, XP to learn, and effect (damage etc.) worked out for that level.</li>
     </ul>
     <p>Pick a tab above to get started. Inside each tab, open a panel and tick only the specific options you want — leave a panel closed and untouched to allow anything in it — then click <strong>Randomise</strong>.</p>
   </div>
@@ -90,6 +92,33 @@
   <p class="hint" id="hint" aria-live="polite"></p>
   </section>
 
+  <section class="tab-panel" id="tab-items">
+  <details class="panel" id="panel-item-quality">
+    <summary><h2>Quality</h2></summary>
+    <div class="chip-grid" id="item-quality-options"></div>
+  </details>
+
+  <details class="panel" id="panel-item-types">
+    <summary><h2>Item Type</h2></summary>
+    <input type="search" id="misc-item-search" placeholder="Filter items by name..." class="item-search" />
+    <div id="misc-item-groups"></div>
+  </details>
+
+  <div class="controls">
+    <button id="item-randomise-btn" type="button">🎒 Randomise</button>
+    <button id="item-copy-btn" type="button" class="secondary">Copy</button>
+  </div>
+
+  <section class="output-wrap">
+    <label>Result</label>
+    <div id="item-output" class="output-box" role="status" aria-live="polite">
+      <p class="placeholder">Your item awaits discovery...</p>
+    </div>
+  </section>
+
+  <p class="hint" id="item-hint" aria-live="polite"></p>
+  </section>
+
   <section class="tab-panel" id="tab-scrolls">
   <details class="panel" id="panel-level">
     <summary><h2>Level</h2></summary>
@@ -99,7 +128,7 @@
   <details class="panel" id="panel-spells">
     <summary><h2>Spell</h2></summary>
     <input type="search" id="spell-search" placeholder="Filter spells by name..." class="item-search" />
-    <div class="chip-grid" id="spell-options"></div>
+    <div id="spell-groups"></div>
   </details>
 
   <div class="controls">

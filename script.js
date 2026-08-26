@@ -15,32 +15,41 @@ function buildChip(container, value, label) {
   container.appendChild(chip);
 }
 
+// Renders one <details> per category, each holding a chip-grid of matching entries.
+function buildGroupedChips(container, order, list, categoryField) {
+  order.forEach((category) => {
+    const group = document.createElement('details');
+    group.className = 'item-group';
+    const summary = document.createElement('summary');
+    summary.textContent = category;
+    group.appendChild(summary);
+
+    const grid = document.createElement('div');
+    grid.className = 'chip-grid';
+    list.filter((entry) => entry[categoryField] === category).forEach((entry) => {
+      buildChip(grid, entry.name, entry.name);
+    });
+    group.appendChild(grid);
+    container.appendChild(group);
+  });
+}
+
+function bindGroupSearch(searchInput, groupsContainer) {
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.trim().toLowerCase();
+    groupsContainer.querySelectorAll('.chip').forEach((chip) => {
+      const label = chip.textContent.trim().toLowerCase();
+      chip.style.display = label.includes(term) ? '' : 'none';
+    });
+  });
+}
+
 QUALITY.forEach((q) => buildChip(qualityContainer, q.name, q.name));
 MATERIAL_NAMES.forEach((m) => buildChip(materialContainer, m, m));
 
-CATEGORY_ORDER.forEach((category) => {
-  const group = document.createElement('details');
-  group.className = 'item-group';
-  const summary = document.createElement('summary');
-  summary.textContent = category;
-  group.appendChild(summary);
+buildGroupedChips(itemGroups, CATEGORY_ORDER, WEAPONS, 'category');
 
-  const grid = document.createElement('div');
-  grid.className = 'chip-grid';
-  WEAPONS.filter((w) => w.category === category).forEach((w) => {
-    buildChip(grid, w.name, w.name);
-  });
-  group.appendChild(grid);
-  itemGroups.appendChild(group);
-});
-
-itemSearch.addEventListener('input', () => {
-  const term = itemSearch.value.trim().toLowerCase();
-  itemGroups.querySelectorAll('.chip').forEach((chip) => {
-    const label = chip.textContent.trim().toLowerCase();
-    chip.style.display = label.includes(term) ? '' : 'none';
-  });
-});
+bindGroupSearch(itemSearch, itemGroups);
 
 function getChecked(container) {
   return [...container.querySelectorAll('input:checked')].map((i) => i.value);
@@ -202,24 +211,100 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
   });
 });
 
+// --- Items ---
+
+const itemQualityContainer = document.getElementById('item-quality-options');
+const miscItemGroups = document.getElementById('misc-item-groups');
+const miscItemSearch = document.getElementById('misc-item-search');
+const itemOutput = document.getElementById('item-output');
+const itemHint = document.getElementById('item-hint');
+
+ITEM_QUALITY.forEach((q) => buildChip(itemQualityContainer, q.name, q.name));
+buildGroupedChips(miscItemGroups, ITEM_CATEGORY_ORDER, ITEMS, 'category');
+bindGroupSearch(miscItemSearch, miscItemGroups);
+
+function randomiseItem() {
+  itemHint.textContent = '';
+
+  const allowedQualityNames = getChecked(itemQualityContainer);
+  const qualityPool = allowedQualityNames.length
+    ? ITEM_QUALITY.filter((q) => allowedQualityNames.includes(q.name))
+    : ITEM_QUALITY;
+
+  const allowedItemNames = getChecked(miscItemGroups);
+  const itemPool = allowedItemNames.length
+    ? ITEMS.filter((i) => allowedItemNames.includes(i.name))
+    : ITEMS;
+
+  if (itemPool.length === 0) {
+    itemHint.textContent = 'No items match your current filters.';
+    return;
+  }
+
+  const item = pickRandom(itemPool);
+  const quality = pickRandom(qualityPool);
+
+  const itemName = item.fixedPrice ? item.name : `${quality.name} ${item.name}`;
+  const cost = item.fixedPrice ? item.cost : round2(item.cost * (1 + quality.cost));
+  const qualityText = item.fixedPrice ? 'Fixed (inherent to tier)' : quality.name;
+  const encText = item.enc === null ? 'N/A' : item.enc;
+
+  itemOutput.innerHTML = `
+    <h3 class="result-title">${itemName}</h3>
+    <div class="stat-row"><span>Quality</span><strong>${qualityText}</strong></div>
+    <div class="stat-row"><span>ENC</span><strong>${encText}</strong></div>
+    ${item.extra ? `<div class="stat-row"><span>Detail</span><strong>${item.extra}</strong></div>` : ''}
+    <div class="stat-row"><span>Cost</span><strong>${cost}</strong></div>
+  `;
+}
+
+async function copyItemResult() {
+  const text = itemOutput.innerText.trim();
+  if (!text || itemOutput.querySelector('.placeholder')) {
+    itemHint.textContent = 'Nothing to copy yet — randomise first.';
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    itemHint.textContent = 'Copied to clipboard.';
+  } catch (err) {
+    itemHint.textContent = 'Could not copy automatically — select and copy manually.';
+  }
+}
+
+document.getElementById('item-randomise-btn').addEventListener('click', randomiseItem);
+document.getElementById('item-copy-btn').addEventListener('click', copyItemResult);
+
 // --- Spell Scrolls ---
 
 const levelContainer = document.getElementById('level-options');
-const spellContainer = document.getElementById('spell-options');
+const spellGroups = document.getElementById('spell-groups');
 const spellSearch = document.getElementById('spell-search');
 const scrollOutput = document.getElementById('scroll-output');
 const scrollHint = document.getElementById('scroll-hint');
 
 SPELL_LEVELS.forEach((lvl) => buildChip(levelContainer, lvl.name, lvl.name));
-SPELLS.forEach((s) => buildChip(spellContainer, s, s));
+buildGroupedChips(spellGroups, SPELL_SCHOOL_ORDER, SPELLS, 'school');
+bindGroupSearch(spellSearch, spellGroups);
 
-spellSearch.addEventListener('input', () => {
-  const term = spellSearch.value.trim().toLowerCase();
-  spellContainer.querySelectorAll('.chip').forEach((chip) => {
-    const label = chip.textContent.trim().toLowerCase();
-    chip.style.display = label.includes(term) ? '' : 'none';
-  });
-});
+// Computes the magicka cost for a spell at a given level: a flat number, a level multiplier
+// formula like 'L*20', or null for the handful of 'varies' spells (see their effect text instead).
+function computeMagicka(formula, level) {
+  if (typeof formula === 'number') return formula;
+  if (formula === 'varies') return null;
+  const match = /^L\*([\d.]+)$/.exec(formula);
+  return match ? Math.round(level * parseFloat(match[1])) : null;
+}
+
+// Substitutes "[Spell Level]" placeholders in an effect description with the rolled level,
+// evaluating simple "N*[Spell Level]" products and "[Spell Level]dN" dice notation along the way.
+function renderEffect(template, level) {
+  return template
+    .replace(/\[Spell Level\]d(\d+)/g, (_, n) => `${level}d${n}`)
+    .replace(/(\d+(?:\.\d+)?)\s*\*\s*\[Spell Level\]/g, (_, n) => `${Math.round(parseFloat(n) * level)}`)
+    .replace(/\[Spell Level\]\s*\*\s*(\d+(?:\.\d+)?)/g, (_, n) => `${Math.round(level * parseFloat(n))}`)
+    .replace(/\[Spell Level\]/g, `${level}`);
+}
 
 function randomiseScroll() {
   scrollHint.textContent = '';
@@ -229,8 +314,10 @@ function randomiseScroll() {
     ? SPELL_LEVELS.filter((l) => allowedLevelNames.includes(l.name))
     : SPELL_LEVELS;
 
-  const allowedSpellNames = getChecked(spellContainer);
-  const spellPool = allowedSpellNames.length ? allowedSpellNames : SPELLS;
+  const allowedSpellNames = getChecked(spellGroups);
+  const spellPool = allowedSpellNames.length
+    ? SPELLS.filter((s) => allowedSpellNames.includes(s.name))
+    : SPELLS;
 
   if (spellPool.length === 0) {
     scrollHint.textContent = 'No spells match your current filters.';
@@ -239,12 +326,20 @@ function randomiseScroll() {
 
   const level = pickRandom(levelPool);
   const spell = pickRandom(spellPool);
-  const scrollName = level.prefix ? `${level.prefix} ${spell}` : spell;
+  const scrollName = level.prefix ? `${level.prefix} ${spell.name}` : spell.name;
+
+  const magicka = computeMagicka(spell.magicka, level.level);
+  const magickaText = magicka === null ? 'Varies (see effect)' : magicka;
+  const effectText = renderEffect(spell.effect, level.level);
 
   scrollOutput.innerHTML = `
     <h3 class="result-title">${scrollName}</h3>
     <div class="stat-row"><span>Level</span><strong>${level.name}</strong></div>
-    <div class="stat-row"><span>Spell</span><strong>${spell}</strong></div>
+    <div class="stat-row"><span>School</span><strong>${spell.school}</strong></div>
+    <div class="stat-row"><span>Form</span><strong>${spell.form}</strong></div>
+    <div class="stat-row"><span>Magicka Cost</span><strong>${magickaText}</strong></div>
+    <div class="stat-row"><span>XP to Learn</span><strong>${level.xp}</strong></div>
+    <p class="effect-text">${effectText}</p>
   `;
 }
 

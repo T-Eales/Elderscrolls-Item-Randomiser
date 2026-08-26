@@ -414,6 +414,15 @@ button.secondary {
   text-align: right;
 }
 
+.effect-text {
+  margin: 0.7rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--parchment);
+}
+
 .hint {
   text-align: center;
   min-height: 1.2rem;
