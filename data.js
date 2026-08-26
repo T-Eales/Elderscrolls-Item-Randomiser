@@ -384,6 +384,56 @@ const SPELLS = [
 
 const SPELL_SCHOOL_ORDER = ['Alteration', 'Conjuration', 'Destruction', 'Illusion', 'Mysticism', 'Restoration'];
 
+// Potion quality tiers (Degrees of Success and Materials are excluded — this tool only rolls the
+// finished potion, not the crafting check). `cost` is the same percentage-modifier convention used
+// elsewhere. Index position matters: each POTIONS entry's `values` array is ordered to match these
+// seven tiers (Failure..Exquisite), so quality index doubles as the values-array index.
+const POTION_QUALITY = [
+  { name: 'Failure',     cost: -0.75 },
+  { name: 'Terrible',    cost: -0.50 },
+  { name: 'Poor',        cost: -0.25 },
+  { name: 'Common',      cost:  0 },
+  { name: 'Expensive',   cost:  0.50 },
+  { name: 'Extravagant', cost:  1.00 },
+  { name: 'Exquisite',   cost:  2.00 },
+];
+
+// Sub-effect pools for potions whose effect targets a specific attribute/resistance/damage type.
+const FORTIFY_TYPES = ['Intelligence', 'Health', 'Magicka', 'Willpower', 'Agility', 'Luck', 'Strength', 'Perception', 'Personality', 'Speed', 'Stamina'];
+const DRAIN_TYPES = ['Intelligence', 'Willpower', 'Agility', 'Luck', 'Strength', 'Perception', 'Personality', 'Speed', 'Stamina'];
+const RESIST_TYPES = ['Poison', 'Shock', 'Fire', 'Frost', 'Paralysis', 'Fear'];
+const WEAKNESS_TYPES = ['Poison', 'Shock', 'Fire', 'Frost', 'Paralysis', 'Fear'];
+const IMBUE_TYPES = ['Poison', 'Shock', 'Fire', 'Frost', 'Paralysis', 'Fear'];
+
+// Potions. `type` is the delivery method(s) from the source table. `values`, when present, is the
+// Failure->Exquisite scaling for the "{V}" placeholder in `effect`; `signed` formats positive values
+// with an explicit "+". `subtypes`, when present, is rolled separately and substituted for
+// "[Type]" in the effect text (e.g. Fortify rolls one of FORTIFY_TYPES).
+const POTIONS = [
+  { name: 'Cure Disease', type: 'Drink', cost: 80, effect: 'Cures All Diseases' },
+  { name: 'Cure Poison', type: 'Drink', cost: 35, effect: 'Stops the effects of all Poisons' },
+  { name: 'Fortify', type: 'Drink', cost: 100, effect: 'Gain {V} to [Type]', values: [5, 10, 15, 20, 30, 40, 50], subtypes: FORTIFY_TYPES },
+  { name: 'Drain', type: 'Drink/Grease', cost: 150, effect: 'Removes {V} to [Type]', values: [5, 10, 15, 20, 30, 40, 50], subtypes: DRAIN_TYPES },
+  { name: 'Invisibility', type: 'Drink', cost: 200, effect: 'Gain Invisibility for {V} rounds', values: [1, 2, 3, 4, 6, 8, 10] },
+  { name: 'Resist', type: 'Drink', cost: 90, effect: 'Gain {V}% Resistance to [Type]', values: [5, 10, 15, 20, 30, 40, 50], subtypes: RESIST_TYPES },
+  { name: 'Restore Health', type: 'Drink', cost: 20, effect: 'Gain {V} Health', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Restore Magicka', type: 'Drink', cost: 20, effect: 'Gain {V} Magicka', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Restore Stat', type: 'Drink', cost: 20, effect: 'Restores {V} to Attribute/Skill', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Reduce Fatigue', type: 'Drink', cost: 20, effect: 'Fatigue is altered by {V}', values: [1, 0, -1, -2, -3, -4, -5], signed: true },
+  { name: 'Water Breathing', type: 'Drink', cost: 50, effect: 'Gain Water Breathing for {V} rounds', values: [1, 2, 3, 4, 6, 8, 10] },
+  { name: 'Water Walking', type: 'Drink', cost: 100, effect: 'Gain Water Walking for {V} rounds', values: [1, 2, 3, 4, 6, 8, 10] },
+  { name: 'Well Being', type: 'Drink', cost: 50, effect: 'Gain {V} Health & Magicka', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Damage Health', type: 'Drink/Grease', cost: 60, effect: 'Deals {V} damage to Health', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Damage Magicka', type: 'Drink/Grease', cost: 90, effect: 'Deals {V} damage to Magicka', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Induce Fatigue', type: 'Drink/Grease/Throw', cost: 70, effect: 'Gain {V} Fatigue', values: [0, 1, 2, 3, 4, 5, 6] },
+  { name: 'Fear', type: 'Drink/Grease/Throw', cost: 100, effect: 'Must make a Fear Test' },
+  { name: 'Frenzy', type: 'Drink/Grease/Throw', cost: 90, effect: 'Gain Frenzy for {V} rounds', values: [1, 2, 3, 4, 6, 8, 10] },
+  { name: 'Weaken', type: 'Drink/Grease', cost: 100, effect: 'Lose {V} to Skill', values: [5, 10, 15, 20, 30, 40, 50] },
+  { name: 'Paralysis', type: 'Drink/Grease', cost: 130, effect: 'Gain Paralyzed for {V} rounds', values: [1, 2, 3, 4, 6, 8, 10] },
+  { name: 'Weakness', type: 'Drink/Grease/Throw', cost: 120, effect: 'Gain {V}% Weakness to [Type]', values: [5, 10, 15, 20, 30, 40, 50], subtypes: WEAKNESS_TYPES },
+  { name: 'Imbue', type: 'Grease/Throw', cost: 50, effect: 'Gain +1d10 [Type] Damage', subtypes: IMBUE_TYPES },
+];
+
 // Non-weapon items. `enc` null = "N/A" in the source table. `fixedPrice: true` means the item's tiers
 // (soul gem size, ingredient grade, spell level) already bake in a quality-like scale, so the Quality
 // panel is not applied to it.

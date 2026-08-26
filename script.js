@@ -570,3 +570,80 @@ async function copyScrollResult() {
 
 document.getElementById('scroll-randomise-btn').addEventListener('click', randomiseScroll);
 document.getElementById('scroll-copy-btn').addEventListener('click', copyScrollResult);
+
+// --- Potions ---
+
+const potionQualityContainer = document.getElementById('potion-quality-options');
+const potionContainer = document.getElementById('potion-options');
+const potionSearch = document.getElementById('potion-search');
+const potionOutput = document.getElementById('potion-output');
+const potionHint = document.getElementById('potion-hint');
+
+POTION_QUALITY.forEach((q) => buildChip(potionQualityContainer, q.name, q.name));
+POTIONS.forEach((p) => buildChip(potionContainer, p.name, p.name));
+bindGroupSearch(potionSearch, potionContainer);
+
+// Renders a potion's effect at a given quality tier index (0=Failure..6=Exquisite), substituting
+// "{V}" with the scaled value (sign-formatted if `signed`) and "[Type]" with a rolled subtype.
+function renderPotionEffect(potion, qualityIndex, subtype) {
+  let effect = potion.effect;
+  if (potion.values) {
+    const v = potion.values[qualityIndex];
+    const vText = potion.signed && v > 0 ? `+${v}` : `${v}`;
+    effect = effect.replace('{V}', vText);
+  }
+  if (subtype) effect = effect.replace('[Type]', subtype);
+  return effect;
+}
+
+function randomisePotion() {
+  potionHint.textContent = '';
+
+  const allowedQualityNames = getChecked(potionQualityContainer);
+  const qualityPool = allowedQualityNames.length
+    ? POTION_QUALITY.filter((q) => allowedQualityNames.includes(q.name))
+    : POTION_QUALITY;
+
+  const allowedPotionNames = getChecked(potionContainer);
+  const potionPool = allowedPotionNames.length
+    ? POTIONS.filter((p) => allowedPotionNames.includes(p.name))
+    : POTIONS;
+
+  if (potionPool.length === 0) {
+    potionHint.textContent = 'No potions match your current filters.';
+    return;
+  }
+
+  const potion = pickRandom(potionPool);
+  const quality = pickRandom(qualityPool);
+  const qualityIndex = POTION_QUALITY.indexOf(quality);
+  const subtype = potion.subtypes ? pickRandom(potion.subtypes) : null;
+
+  const cost = round2(potion.cost * (1 + quality.cost));
+  const effectText = renderPotionEffect(potion, qualityIndex, subtype);
+  const potionName = subtype ? `${potion.name} (${subtype})` : potion.name;
+
+  potionOutput.innerHTML = `
+    <h3 class="result-title">${quality.name} ${potionName} Potion</h3>
+    <div class="stat-row"><span>Type</span><strong>${potion.type}</strong></div>
+    <div class="stat-row"><span>Cost</span><strong>${cost}</strong></div>
+    <p class="effect-text">${effectText}</p>
+  `;
+}
+
+async function copyPotionResult() {
+  const text = potionOutput.innerText.trim();
+  if (!text || potionOutput.querySelector('.placeholder')) {
+    potionHint.textContent = 'Nothing to copy yet — randomise first.';
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    potionHint.textContent = 'Copied to clipboard.';
+  } catch (err) {
+    potionHint.textContent = 'Could not copy automatically — select and copy manually.';
+  }
+}
+
+document.getElementById('potion-randomise-btn').addEventListener('click', randomisePotion);
+document.getElementById('potion-copy-btn').addEventListener('click', copyPotionResult);

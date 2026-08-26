@@ -38,6 +38,7 @@
   <button class="tab-btn" type="button" data-tab="shields" role="tab" aria-selected="false">🔰 Shields</button>
   <button class="tab-btn" type="button" data-tab="items" role="tab" aria-selected="false">🎒 Items</button>
   <button class="tab-btn" type="button" data-tab="scrolls" role="tab" aria-selected="false">📜 Spell Scrolls</button>
+  <button class="tab-btn" type="button" data-tab="potions" role="tab" aria-selected="false">🧪 Potions</button>
 </nav>
 
 <main>
@@ -51,6 +52,7 @@
       <li><strong>🔰 Shields</strong> — roll a Quality, Material, Shield Type, Tower upgrade, and Enchantment, with AR, bash damage, ranged defense, encumbrance and cost worked out automatically.</li>
       <li><strong>🎒 Items</strong> — roll a Quality and an Item Type (clothing, tools, arcane items, books) with encumbrance and cost worked out automatically.</li>
       <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell, with magicka cost, cost to buy, and effect (damage etc.) worked out for that level.</li>
+      <li><strong>🧪 Potions</strong> — roll a Quality and a Potion, with the effect (scaled to quality, including which attribute/resistance it targets) and cost worked out automatically.</li>
     </ul>
     <p>Pick a tab above to get started. Inside each tab, open a panel and tick only the specific options you want — leave a panel closed and untouched to allow anything in it — then click <strong>Randomise</strong>.</p>
     <p class="dedication">Made for my beloved, demanding wife, Raveena 💋</p>
@@ -241,6 +243,33 @@
   </section>
 
   <p class="hint" id="scroll-hint" aria-live="polite"></p>
+  </section>
+
+  <section class="tab-panel" id="tab-potions">
+  <details class="panel" id="panel-potion-quality">
+    <summary><h2>Quality</h2></summary>
+    <div class="chip-grid" id="potion-quality-options"></div>
+  </details>
+
+  <details class="panel" id="panel-potion-type">
+    <summary><h2>Potion</h2></summary>
+    <input type="search" id="potion-search" placeholder="Filter potions by name..." class="item-search" />
+    <div class="chip-grid" id="potion-options"></div>
+  </details>
+
+  <div class="controls">
+    <button id="potion-randomise-btn" type="button">🧪 Randomise</button>
+    <button id="potion-copy-btn" type="button" class="secondary">Copy</button>
+  </div>
+
+  <section class="output-wrap">
+    <label>Result</label>
+    <div id="potion-output" class="output-box" role="status" aria-live="polite">
+      <p class="placeholder">Your potion awaits the cauldron...</p>
+    </div>
+  </section>
+
+  <p class="hint" id="potion-hint" aria-live="polite"></p>
   </section>
 </main>
 
