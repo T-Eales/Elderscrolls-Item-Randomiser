@@ -481,13 +481,6 @@ const ITEMS = [
   { name: 'Grand Soul Gem (Empty)', category: 'Soul Gems (Empty)', enc: 0, cost: 1250, extra: 'Max Energy 1500', fixedPrice: true },
   { name: 'Black Soul Gem (Empty)', category: 'Soul Gems (Empty)', enc: 0, cost: 1750, extra: 'Max Energy 1500', fixedPrice: true },
 
-  { name: 'Petty Soul Gem (Filled)', category: 'Soul Gems (Filled)', enc: 0, cost: 150, extra: 'Max Energy 100', fixedPrice: true },
-  { name: 'Lesser Soul Gem (Filled)', category: 'Soul Gems (Filled)', enc: 0, cost: 375, extra: 'Max Energy 250', fixedPrice: true },
-  { name: 'Common Soul Gem (Filled)', category: 'Soul Gems (Filled)', enc: 0, cost: 750, extra: 'Max Energy 500', fixedPrice: true },
-  { name: 'Greater Soul Gem (Filled)', category: 'Soul Gems (Filled)', enc: 0, cost: 1500, extra: 'Max Energy 1000', fixedPrice: true },
-  { name: 'Grand Soul Gem (Filled)', category: 'Soul Gems (Filled)', enc: 0, cost: 3750, extra: 'Max Energy 1500', fixedPrice: true },
-  { name: 'Black Soul Gem (Filled)', category: 'Soul Gems (Filled)', enc: 0, cost: 5250, extra: 'Max Energy 1500', fixedPrice: true },
-
   { name: 'Spell Tome (Level 1)', category: 'Spell Tomes', enc: 0, cost: 25, fixedPrice: true },
   { name: 'Spell Tome (Level 2)', category: 'Spell Tomes', enc: 0, cost: 50, fixedPrice: true },
   { name: 'Spell Tome (Level 3)', category: 'Spell Tomes', enc: 0, cost: 75, fixedPrice: true },
@@ -504,7 +497,6 @@ const ITEM_CATEGORY_ORDER = [
   'Tools & Gear',
   'Blank Scrolls',
   'Soul Gems (Empty)',
-  'Soul Gems (Filled)',
   'Spell Tomes',
   'Books',
 ];
