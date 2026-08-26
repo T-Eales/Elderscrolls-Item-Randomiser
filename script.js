@@ -195,6 +195,107 @@ async function copyResult() {
 document.getElementById('randomise-btn').addEventListener('click', randomise);
 document.getElementById('copy-btn').addEventListener('click', copyResult);
 
+// --- Armour ---
+
+const armourQualityContainer = document.getElementById('armour-quality-options');
+const armourMaterialContainer = document.getElementById('armour-material-options');
+const armourEnchantContainer = document.getElementById('armour-enchant-options');
+const armourGroups = document.getElementById('armour-groups');
+const armourSearch = document.getElementById('armour-search');
+const armourOutput = document.getElementById('armour-output');
+const armourHint = document.getElementById('armour-hint');
+
+ARMOR_QUALITY.forEach((q) => buildChip(armourQualityContainer, q.name, q.name));
+ARMOR_MATERIAL_NAMES.forEach((m) => buildChip(armourMaterialContainer, m, m));
+buildGroupedChips(armourGroups, ARMOR_CATEGORY_ORDER, ARMOR_TYPES, 'category');
+bindGroupSearch(armourSearch, armourGroups);
+
+function randomiseArmour() {
+  armourHint.textContent = '';
+
+  const allowedQualityNames = getChecked(armourQualityContainer);
+  const qualityPool = allowedQualityNames.length
+    ? ARMOR_QUALITY.filter((q) => allowedQualityNames.includes(q.name))
+    : ARMOR_QUALITY;
+
+  const allowedEnchant = getChecked(armourEnchantContainer);
+  const enchantPool = allowedEnchant.length ? allowedEnchant : ['Mundane', 'Enchanted'];
+
+  const allowedArmourNames = getChecked(armourGroups);
+  const armourPool = allowedArmourNames.length
+    ? ARMOR_TYPES.filter((a) => allowedArmourNames.includes(a.name))
+    : ARMOR_TYPES;
+
+  const allowedMaterialNames = getChecked(armourMaterialContainer);
+
+  if (armourPool.length === 0) {
+    armourHint.textContent = 'No armour types match your current filters.';
+    return;
+  }
+
+  const armour = pickRandom(armourPool);
+  const quality = pickRandom(qualityPool);
+  const enchantment = pickRandom(enchantPool);
+
+  const validMaterialNames = ARMOR_MATERIAL_NAMES.filter((m) => ARMOR_MATERIALS[m].weights.includes(armour.category));
+  let materialPool = allowedMaterialNames.length
+    ? allowedMaterialNames.filter((m) => validMaterialNames.includes(m))
+    : validMaterialNames;
+
+  if (materialPool.length === 0) {
+    materialPool = validMaterialNames;
+    armourHint.textContent = 'None of your selected materials fit this armour type — picked from all valid materials instead.';
+  }
+
+  const materialName = pickRandom(materialPool);
+  const material = ARMOR_MATERIALS[materialName];
+  const materialEnc = typeof material.enc === 'object' ? material.enc[armour.category] : material.enc;
+
+  const enchantLevel = enchantment === 'Enchanted' ? 1 + Math.floor(Math.random() * 6) : null;
+
+  renderArmourResult({ armour, quality, enchantment, enchantLevel, materialName, material, materialEnc });
+}
+
+function renderArmourResult({ armour, quality, enchantment, enchantLevel, materialName, material, materialEnc }) {
+  const finalAR = armour.ar + material.ar + quality.ar;
+
+  const carriedEnc = round2(armour.totalEnc * (1 + materialEnc) * (1 + quality.enc));
+  const wornEnc = Math.floor(carriedEnc / 2);
+
+  let cost = armour.totalCost * material.costMulti * (1 + quality.cost);
+  if (enchantLevel) cost *= enchantmentCostMultiplier(enchantLevel);
+  const costText = round2(cost).toString();
+
+  const enchantmentText = enchantLevel ? `Enchanted (Level ${enchantLevel})` : 'Mundane';
+
+  armourOutput.innerHTML = `
+    <h3 class="result-title">${quality.name} ${materialName} ${armour.name}</h3>
+    <div class="stat-row"><span>Enchantment</span><strong>${enchantmentText}</strong></div>
+    <div class="stat-row"><span>AR</span><strong>${finalAR}</strong></div>
+    <div class="stat-row"><span>ENC (Carried)</span><strong>${carriedEnc}</strong></div>
+    <div class="stat-row"><span>ENC (Worn)</span><strong>${wornEnc}</strong></div>
+    <div class="stat-row"><span>Qualities</span><strong>${material.qualities.join(', ')}</strong></div>
+    <div class="stat-row"><span>Cost</span><strong>${costText}</strong></div>
+  `;
+}
+
+async function copyArmourResult() {
+  const text = armourOutput.innerText.trim();
+  if (!text || armourOutput.querySelector('.placeholder')) {
+    armourHint.textContent = 'Nothing to copy yet — randomise first.';
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    armourHint.textContent = 'Copied to clipboard.';
+  } catch (err) {
+    armourHint.textContent = 'Could not copy automatically — select and copy manually.';
+  }
+}
+
+document.getElementById('armour-randomise-btn').addEventListener('click', randomiseArmour);
+document.getElementById('armour-copy-btn').addEventListener('click', copyArmourResult);
+
 // --- Tabs ---
 
 document.querySelectorAll('.tab-btn').forEach((btn) => {

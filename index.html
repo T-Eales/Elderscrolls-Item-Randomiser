@@ -34,6 +34,7 @@
 <nav class="tabs" role="tablist">
   <button class="tab-btn active" type="button" data-tab="welcome" role="tab" aria-selected="true">🏠 Welcome</button>
   <button class="tab-btn" type="button" data-tab="weapons" role="tab" aria-selected="false">⚔ Weapons</button>
+  <button class="tab-btn" type="button" data-tab="armour" role="tab" aria-selected="false">🛡 Armour</button>
   <button class="tab-btn" type="button" data-tab="items" role="tab" aria-selected="false">🎒 Items</button>
   <button class="tab-btn" type="button" data-tab="scrolls" role="tab" aria-selected="false">📜 Spell Scrolls</button>
 </nav>
@@ -45,6 +46,7 @@
     <p>This tool rolls up randomised Elder Scrolls-style items for tabletop &amp; MMO worldbuilding, complete with full stats and cost.</p>
     <ul class="intro">
       <li><strong>⚔ Weapons</strong> — roll a Quality, Material, Item Type, and Enchantment, with damage, penetration, range, encumbrance and cost worked out automatically.</li>
+      <li><strong>🛡 Armour</strong> — roll a Quality, Material, Armour Type, and Enchantment, with AR, encumbrance and cost worked out automatically.</li>
       <li><strong>🎒 Items</strong> — roll a Quality and an Item Type (clothing, tools, arcane items, livestock, transportation) with encumbrance and cost worked out automatically.</li>
       <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell, with magicka cost, XP to learn, and effect (damage etc.) worked out for that level.</li>
     </ul>
@@ -90,6 +92,46 @@
   </section>
 
   <p class="hint" id="hint" aria-live="polite"></p>
+  </section>
+
+  <section class="tab-panel" id="tab-armour">
+  <details class="panel" id="panel-armour-quality">
+    <summary><h2>Quality</h2></summary>
+    <div class="chip-grid" id="armour-quality-options"></div>
+  </details>
+
+  <details class="panel" id="panel-armour-material">
+    <summary><h2>Material</h2></summary>
+    <div class="chip-grid" id="armour-material-options"></div>
+  </details>
+
+  <details class="panel" id="panel-armour-enchant">
+    <summary><h2>Enchantment</h2></summary>
+    <div class="chip-grid" id="armour-enchant-options">
+      <label class="chip"><input type="checkbox" value="Mundane" /> Mundane</label>
+      <label class="chip"><input type="checkbox" value="Enchanted" /> Enchanted</label>
+    </div>
+  </details>
+
+  <details class="panel" id="panel-armour-types">
+    <summary><h2>Armour Type</h2></summary>
+    <input type="search" id="armour-search" placeholder="Filter armour by name..." class="item-search" />
+    <div id="armour-groups"></div>
+  </details>
+
+  <div class="controls">
+    <button id="armour-randomise-btn" type="button">🛡 Randomise</button>
+    <button id="armour-copy-btn" type="button" class="secondary">Copy</button>
+  </div>
+
+  <section class="output-wrap">
+    <label>Result</label>
+    <div id="armour-output" class="output-box" role="status" aria-live="polite">
+      <p class="placeholder">Your armour awaits the forge...</p>
+    </div>
+  </section>
+
+  <p class="hint" id="armour-hint" aria-live="polite"></p>
   </section>
 
   <section class="tab-panel" id="tab-items">

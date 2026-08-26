@@ -134,6 +134,71 @@ const CATEGORY_ORDER = [
   'One-Handed Ranged',
 ];
 
+// Armor quality tiers: AR is added/subtracted directly (no trait names, unlike weapon Quality).
+// `enc` / `cost` are percentage modifiers (e.g. 0.25 = +25%), same convention as weapon QUALITY.
+const ARMOR_QUALITY = [
+  { name: 'Rubbish',     ar: -3, enc:  0.30, cost: -0.75 },
+  { name: 'Terrible',    ar: -2, enc:  0.20, cost: -0.50 },
+  { name: 'Poor',        ar: -1, enc:  0.10, cost: -0.25 },
+  { name: 'Common',      ar:  0, enc:  0,    cost:  0 },
+  { name: 'Expensive',   ar:  1, enc: -0.10, cost:  0.25 },
+  { name: 'Extravagant', ar:  2, enc: -0.20, cost:  0.50 },
+  { name: 'Exquisite',   ar:  3, enc: -0.30, cost:  0.75 },
+];
+
+// Base armor types. `enc` is per-location (Body/Head/Arm/Leg) encumbrance; `totalEnc`/`totalCost`
+// are the literal totals from the source table (a full suit = 1 body + 1 head + 2 arms + 2 legs).
+const ARMOR_TYPES = [
+  { name: 'Padded Robes',    category: 'Unarmored', ar: 2,  enc: { body: 1,  head: 1, arm: 1, leg: 1 }, totalEnc: 6,  costPerLoc: 20,  totalCost: 120 },
+  { name: 'Natural/Cured',   category: 'Light',      ar: 8,  enc: { body: 3,  head: 1, arm: 1, leg: 1 }, totalEnc: 8,  costPerLoc: 10,  totalCost: 60 },
+  { name: 'Padded/Quilted',  category: 'Light',      ar: 12, enc: { body: 3,  head: 1, arm: 2, leg: 2 }, totalEnc: 12, costPerLoc: 30,  totalCost: 180 },
+  { name: 'Hardened/Sturdy', category: 'Light',      ar: 14, enc: { body: 4,  head: 2, arm: 2, leg: 2 }, totalEnc: 14, costPerLoc: 40,  totalCost: 240 },
+  { name: 'Ring-mail',       category: 'Medium',     ar: 16, enc: { body: 5,  head: 2, arm: 2, leg: 3 }, totalEnc: 17, costPerLoc: 50,  totalCost: 300 },
+  { name: 'Scaled',          category: 'Medium',     ar: 18, enc: { body: 6,  head: 2, arm: 3, leg: 4 }, totalEnc: 22, costPerLoc: 75,  totalCost: 450 },
+  { name: 'Partial Plate',   category: 'Medium',     ar: 20, enc: { body: 7,  head: 2, arm: 4, leg: 5 }, totalEnc: 28, costPerLoc: 100, totalCost: 600 },
+  { name: 'Mail',            category: 'Heavy',      ar: 23, enc: { body: 7,  head: 3, arm: 5, leg: 5 }, totalEnc: 30, costPerLoc: 150, totalCost: 900 },
+  { name: 'Plated Mail',     category: 'Heavy',      ar: 26, enc: { body: 10, head: 4, arm: 6, leg: 7 }, totalEnc: 40, costPerLoc: 200, totalCost: 1200 },
+  { name: 'Full Plate',      category: 'Heavy',      ar: 30, enc: { body: 12, head: 6, arm: 7, leg: 8 }, totalEnc: 48, costPerLoc: 250, totalCost: 1500 },
+];
+
+const ARMOR_CATEGORY_ORDER = ['Unarmored', 'Light', 'Medium', 'Heavy'];
+
+// Armor materials. `enc`/`costMulti` scale the base armor type's totalEnc/totalCost above
+// (costMulti is a straight multiplier, e.g. x9.0; enc is a percentage modifier, e.g. -0.25 = -25%).
+// Malachite and Stalhrim have a different enc modifier depending on the base armor's weight
+// category, so their `enc` is an object keyed by that category instead of a single number.
+// Wood ("Shields Only" in the source) is omitted — this tab covers body armor, not shields.
+const ARMOR_MATERIALS = {
+  'Adamantium':   { weights: ['Medium', 'Heavy'],          ar:  6,   enc: -0.25, costMulti: 9.0,  qualities: ['Rigid', 'Resist (Magic)'] },
+  'Bone':         { weights: ['Medium'],                   ar: -10,  enc:  0.30, costMulti: 0.2,  qualities: ['Mundane'] },
+  'Bonemold':     { weights: ['Medium'],                   ar:  2,   enc: -0.15, costMulti: 2.5,  qualities: ['Brittle', 'Mundane'] },
+  'Chaurus':      { weights: ['Unarmored', 'Light'],       ar:  1,   enc:  0.05, costMulti: 1.5,  qualities: ['Brittle', 'Mundane'] },
+  'Chitin':       { weights: ['Unarmored', 'Light'],       ar:  2,   enc:  0.25, costMulti: 1.5,  qualities: ['Brittle', 'Mundane'] },
+  'Daedric':      { weights: ['Heavy'],                    ar: 15,   enc:  0.50, costMulti: 15.0, qualities: ['Fear', 'Rigid', 'Spiked'] },
+  'Dragon Bone':  { weights: ['Heavy'],                    ar: 14,   enc:  0.40, costMulti: 14.0, qualities: ['Rigid', 'Spiked', 'Resist (Magic)'] },
+  'Dragon Scale': { weights: ['Medium'],                   ar: 13,   enc:  0.30, costMulti: 13.0, qualities: ['Brittle', 'Spiked', 'Resist (Dragon)'] },
+  'Dragon Hide':  { weights: ['Light'],                    ar: 12,   enc:  0.15, costMulti: 12.0, qualities: ['Flexible', 'Spiked', 'Resist (Dragon)'] },
+  'Dreugh Hide':  { weights: ['Unarmored', 'Light'],       ar:  4,   enc:  0.10, costMulti: 4.0,  qualities: ['Flammable', 'Flexible', 'Mundane'] },
+  'Dwemer':       { weights: ['Heavy'],                    ar:  4,   enc:  0.25, costMulti: 4.0,  qualities: ['Mundane', 'Rigid'] },
+  'Ebonsteel':    { weights: ['Medium', 'Heavy'],          ar:  9,   enc:  0.15, costMulti: 9.0,  qualities: ['Mundane', 'Rigid'] },
+  'Ebony':        { weights: ['Medium', 'Heavy'],          ar: 10,   enc:  0.20, costMulti: 10.0, qualities: ['Mundane', 'Rigid', 'Resist (Magic)'] },
+  'Fur':          { weights: ['Unarmored', 'Light'],       ar: -1,   enc:  0.05, costMulti: 0.9,  qualities: ['Flammable', 'Flexible', 'Mundane'] },
+  'Iron':         { weights: ['Medium', 'Heavy'],          ar: -2,   enc: -0.05, costMulti: 0.8,  qualities: ['Mundane', 'Rigid'] },
+  'Leather':      { weights: ['Unarmored', 'Light'],       ar:  0,   enc:  0,    costMulti: 1.0,  qualities: ['Flammable', 'Flexible', 'Mundane'] },
+  'Lycan Hide':   { weights: ['Unarmored', 'Light'],       ar:  2,   enc:  0.10, costMulti: 2.0,  qualities: ['Flammable', 'Flexible'] },
+  'Malachite':    { weights: ['Light', 'Medium'],          ar:  9,   enc: { Light: 0.30, Medium: -0.25 }, costMulti: 9.0, qualities: ['Mundane', 'Rigid'] },
+  'Mithril':      { weights: ['Light'],                    ar:  6,   enc: -0.70, costMulti: 6.0,  qualities: ['Flexible', 'Mundane', 'Resist (Magic)'] },
+  'Moonstone':    { weights: ['Unarmored', 'Light'],       ar:  8,   enc: -0.30, costMulti: 8.0,  qualities: ['Flexible', 'Mundane'] },
+  'Orichalcum':   { weights: ['Medium', 'Heavy'],          ar:  8,   enc:  0.15, costMulti: 8.0,  qualities: ['Fear', 'Mundane', 'Rigid', 'Spiked'] },
+  'Quicksilver':  { weights: ['Medium', 'Heavy'],          ar:  7,   enc: -0.20, costMulti: 7.0,  qualities: ['Mundane', 'Rigid', 'Resist (Magic)'] },
+  'Stalhrim':     { weights: ['Light', 'Medium'],          ar: 11,   enc: { Light: 0.20, Medium: -0.40 }, costMulti: 11.0, qualities: ['Rigid', 'Resist (Frost)'] },
+  'Steel':        { weights: ['Medium', 'Heavy'],          ar:  0,   enc:  0,    costMulti: 1.0,  qualities: ['Mundane', 'Rigid'] },
+  'Troll':        { weights: ['Light', 'Medium', 'Heavy'], ar:  7,   enc:  0.30, costMulti: 6.0,  qualities: ['Flammable', 'Flexible', 'Resist (Normal)'] },
+  'Wamasu':       { weights: ['Light', 'Medium', 'Heavy'], ar:  6,   enc:  0.20, costMulti: 6.0,  qualities: ['Flexible', 'Resist (Shock)', 'Mundane'] },
+};
+
+const ARMOR_MATERIAL_NAMES = Object.keys(ARMOR_MATERIALS);
+
 // Spell Scroll levels: `prefix` is prepended to the spell name (empty string = no prefix, the base tier).
 // `level` (1-6) feeds the magicka/effect formulas below; `xp` is the cost in XP/CrP to learn a spell of that level.
 const SPELL_LEVELS = [
