@@ -176,6 +176,13 @@ html, body {
   color: var(--magic-teal);
 }
 
+.dedication {
+  margin-top: 1.5rem;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.95rem;
+  color: var(--gold-bright);
+}
+
 main {
   max-width: 900px;
   margin: 0 auto;

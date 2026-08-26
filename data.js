@@ -106,6 +106,8 @@ const WEAPONS = [
   { name: 'Wakizashi', category: 'One-Handed Melee', kind: 'melee', dice: '1d10', flat: 5, type: 'R', pen: 5, s: 'M', r: 'S', wpc: 'EB', qualities: ['Finesse', 'Impale', 'Tear'], enc: 2, cost: 65 },
   { name: 'War Axe', category: 'One-Handed Melee', kind: 'melee', dice: '2d10', flat: 1, type: 'R', pen: 10, s: 'M', r: 'M', wpc: 'LA', qualities: ['Tear', 'Unbalanced'], enc: 4, cost: 88 },
   { name: 'War Pick', category: 'One-Handed Melee', kind: 'melee', dice: '2d10', flat: 0, type: 'R', pen: 20, s: 'M', r: 'M', wpc: 'LA', qualities: ['Impale', 'Unbalanced'], enc: 4, cost: 88 },
+  { name: 'Staff', category: 'One-Handed Melee', kind: 'melee', dice: '1d10', flat: 3, type: 'I', pen: 0, s: 'M', r: 'L', wpc: 'LBT', qualities: ['School (Magic Type) OR Created, Focus, Stun, Well Balanced'], enc: 4, cost: 30 },
+  { name: 'Stave', category: 'One-Handed Melee', kind: 'melee', dice: '1d5', flat: 2, type: 'I', pen: 0, s: 'M', r: 'S', wpc: 'LBT', qualities: ['School (Magic Type) OR Created, Focus, Stun, Well Balanced'], enc: 2, cost: 20 },
 
   // Two-Handed Ranged
   { name: 'Heavy Crossbow', category: 'Two-Handed Ranged', kind: 'ranged', dice: '3d10', flat: 4, type: 'R', pen: 20, range: [20, 150, 300], wpc: 'CB', qualities: ['Complex', 'Impale', 'Reload', 'Sunder'], enc: 5, cost: 175 },
