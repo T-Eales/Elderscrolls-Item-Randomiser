@@ -249,7 +249,7 @@ function randomiseArmour() {
 
   const materialName = pickRandom(materialPool);
   const material = ARMOR_MATERIALS[materialName];
-  const materialEnc = typeof material.enc === 'object' ? material.enc[armour.category] : material.enc;
+  const materialEnc = getMaterialEncMod(material, armour.category);
 
   const enchantLevel = enchantment === 'Enchanted' ? 1 + Math.floor(Math.random() * 6) : null;
 
@@ -295,6 +295,105 @@ async function copyArmourResult() {
 
 document.getElementById('armour-randomise-btn').addEventListener('click', randomiseArmour);
 document.getElementById('armour-copy-btn').addEventListener('click', copyArmourResult);
+
+// --- Shields ---
+
+const shieldQualityContainer = document.getElementById('shield-quality-options');
+const shieldMaterialContainer = document.getElementById('shield-material-options');
+const shieldTypeContainer = document.getElementById('shield-type-options');
+const shieldTowerContainer = document.getElementById('shield-tower-options');
+const shieldEnchantContainer = document.getElementById('shield-enchant-options');
+const shieldOutput = document.getElementById('shield-output');
+const shieldHint = document.getElementById('shield-hint');
+
+ARMOR_QUALITY.forEach((q) => buildChip(shieldQualityContainer, q.name, q.name));
+ARMOR_MATERIAL_NAMES.forEach((m) => buildChip(shieldMaterialContainer, m, m));
+SHIELD_TYPES.forEach((s) => buildChip(shieldTypeContainer, s.name, s.name));
+
+function randomiseShield() {
+  shieldHint.textContent = '';
+
+  const allowedQualityNames = getChecked(shieldQualityContainer);
+  const qualityPool = allowedQualityNames.length
+    ? ARMOR_QUALITY.filter((q) => allowedQualityNames.includes(q.name))
+    : ARMOR_QUALITY;
+
+  const allowedMaterialNames = getChecked(shieldMaterialContainer);
+  const materialPool = allowedMaterialNames.length ? allowedMaterialNames : ARMOR_MATERIAL_NAMES;
+
+  const allowedShieldNames = getChecked(shieldTypeContainer);
+  const shieldPool = allowedShieldNames.length
+    ? SHIELD_TYPES.filter((s) => allowedShieldNames.includes(s.name))
+    : SHIELD_TYPES;
+
+  const allowedTower = getChecked(shieldTowerContainer);
+  const towerPool = allowedTower.length ? allowedTower : ['Standard', 'Tower'];
+
+  const allowedEnchant = getChecked(shieldEnchantContainer);
+  const enchantPool = allowedEnchant.length ? allowedEnchant : ['Mundane', 'Enchanted'];
+
+  if (shieldPool.length === 0) {
+    shieldHint.textContent = 'No shield types match your current filters.';
+    return;
+  }
+
+  const shield = pickRandom(shieldPool);
+  const quality = pickRandom(qualityPool);
+  const materialName = pickRandom(materialPool);
+  const material = ARMOR_MATERIALS[materialName];
+  const isTower = pickRandom(towerPool) === 'Tower';
+  const enchantment = pickRandom(enchantPool);
+  const enchantLevel = enchantment === 'Enchanted' ? 1 + Math.floor(Math.random() * 6) : null;
+
+  const isFlexible = material.qualities.includes('Flexible');
+  const materialEnc = getMaterialEncMod(material, null);
+
+  let finalAR = shield.ar + material.ar + quality.ar;
+  if (isFlexible) finalAR -= 5;
+
+  let enc = shield.enc * (1 + materialEnc) * (1 + quality.enc);
+  if (isFlexible) enc /= 2;
+  if (isTower) enc += 1;
+  enc = round2(enc);
+
+  let cost = shield.cost * material.costMulti * (1 + quality.cost);
+  if (isFlexible) cost /= 2;
+  if (isTower) cost *= 1.5;
+  if (enchantLevel) cost *= enchantmentCostMultiplier(enchantLevel);
+  cost = round2(cost);
+
+  const rangedDefense = shield.rangedDefense + (isTower ? 1 : 0);
+  const enchantmentText = enchantLevel ? `Enchanted (Level ${enchantLevel})` : 'Mundane';
+  const shieldName = `${quality.name} ${materialName} ${shield.name} Shield${isTower ? ' (Tower)' : ''}`;
+
+  shieldOutput.innerHTML = `
+    <h3 class="result-title">${shieldName}</h3>
+    <div class="stat-row"><span>Enchantment</span><strong>${enchantmentText}</strong></div>
+    <div class="stat-row"><span>AR</span><strong>${finalAR}</strong></div>
+    <div class="stat-row"><span>Bash Damage</span><strong>${shield.bashDamage}</strong></div>
+    <div class="stat-row"><span>Ranged Defense</span><strong>${rangedDefense}</strong></div>
+    <div class="stat-row"><span>ENC</span><strong>${enc}</strong></div>
+    <div class="stat-row"><span>Qualities</span><strong>${material.qualities.join(', ')}</strong></div>
+    <div class="stat-row"><span>Cost</span><strong>${cost}</strong></div>
+  `;
+}
+
+async function copyShieldResult() {
+  const text = shieldOutput.innerText.trim();
+  if (!text || shieldOutput.querySelector('.placeholder')) {
+    shieldHint.textContent = 'Nothing to copy yet — randomise first.';
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    shieldHint.textContent = 'Copied to clipboard.';
+  } catch (err) {
+    shieldHint.textContent = 'Could not copy automatically — select and copy manually.';
+  }
+}
+
+document.getElementById('shield-randomise-btn').addEventListener('click', randomiseShield);
+document.getElementById('shield-copy-btn').addEventListener('click', copyShieldResult);
 
 // --- Tabs ---
 

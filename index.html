@@ -35,6 +35,7 @@
   <button class="tab-btn active" type="button" data-tab="welcome" role="tab" aria-selected="true">🏠 Welcome</button>
   <button class="tab-btn" type="button" data-tab="weapons" role="tab" aria-selected="false">⚔ Weapons</button>
   <button class="tab-btn" type="button" data-tab="armour" role="tab" aria-selected="false">🛡 Armour</button>
+  <button class="tab-btn" type="button" data-tab="shields" role="tab" aria-selected="false">🔰 Shields</button>
   <button class="tab-btn" type="button" data-tab="items" role="tab" aria-selected="false">🎒 Items</button>
   <button class="tab-btn" type="button" data-tab="scrolls" role="tab" aria-selected="false">📜 Spell Scrolls</button>
 </nav>
@@ -47,6 +48,7 @@
     <ul class="intro">
       <li><strong>⚔ Weapons</strong> — roll a Quality, Material, Item Type, and Enchantment, with damage, penetration, range, encumbrance and cost worked out automatically.</li>
       <li><strong>🛡 Armour</strong> — roll a Quality, Material, Armour Type, and Enchantment, with AR, encumbrance and cost worked out automatically.</li>
+      <li><strong>🔰 Shields</strong> — roll a Quality, Material, Shield Type, Tower upgrade, and Enchantment, with AR, bash damage, ranged defense, encumbrance and cost worked out automatically.</li>
       <li><strong>🎒 Items</strong> — roll a Quality and an Item Type (clothing, tools, arcane items, livestock, transportation) with encumbrance and cost worked out automatically.</li>
       <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell, with magicka cost, XP to learn, and effect (damage etc.) worked out for that level.</li>
     </ul>
@@ -132,6 +134,53 @@
   </section>
 
   <p class="hint" id="armour-hint" aria-live="polite"></p>
+  </section>
+
+  <section class="tab-panel" id="tab-shields">
+  <details class="panel" id="panel-shield-quality">
+    <summary><h2>Quality</h2></summary>
+    <div class="chip-grid" id="shield-quality-options"></div>
+  </details>
+
+  <details class="panel" id="panel-shield-material">
+    <summary><h2>Material</h2></summary>
+    <div class="chip-grid" id="shield-material-options"></div>
+  </details>
+
+  <details class="panel" id="panel-shield-type">
+    <summary><h2>Shield Type</h2></summary>
+    <div class="chip-grid" id="shield-type-options"></div>
+  </details>
+
+  <details class="panel" id="panel-shield-tower">
+    <summary><h2>Tower Upgrade</h2></summary>
+    <div class="chip-grid" id="shield-tower-options">
+      <label class="chip"><input type="checkbox" value="Standard" /> Standard</label>
+      <label class="chip"><input type="checkbox" value="Tower" /> Tower</label>
+    </div>
+  </details>
+
+  <details class="panel" id="panel-shield-enchant">
+    <summary><h2>Enchantment</h2></summary>
+    <div class="chip-grid" id="shield-enchant-options">
+      <label class="chip"><input type="checkbox" value="Mundane" /> Mundane</label>
+      <label class="chip"><input type="checkbox" value="Enchanted" /> Enchanted</label>
+    </div>
+  </details>
+
+  <div class="controls">
+    <button id="shield-randomise-btn" type="button">🔰 Randomise</button>
+    <button id="shield-copy-btn" type="button" class="secondary">Copy</button>
+  </div>
+
+  <section class="output-wrap">
+    <label>Result</label>
+    <div id="shield-output" class="output-box" role="status" aria-live="polite">
+      <p class="placeholder">Your shield awaits the forge...</p>
+    </div>
+  </section>
+
+  <p class="hint" id="shield-hint" aria-live="polite"></p>
   </section>
 
   <section class="tab-panel" id="tab-items">

@@ -195,7 +195,28 @@ const ARMOR_MATERIALS = {
   'Steel':        { weights: ['Medium', 'Heavy'],          ar:  0,   enc:  0,    costMulti: 1.0,  qualities: ['Mundane', 'Rigid'] },
   'Troll':        { weights: ['Light', 'Medium', 'Heavy'], ar:  7,   enc:  0.30, costMulti: 6.0,  qualities: ['Flammable', 'Flexible', 'Resist (Normal)'] },
   'Wamasu':       { weights: ['Light', 'Medium', 'Heavy'], ar:  6,   enc:  0.20, costMulti: 6.0,  qualities: ['Flexible', 'Resist (Shock)', 'Mundane'] },
+  // Shields-only material — its `weights` never match a body armor category, so it's automatically
+  // excluded from the Armour tab and only appears in the Shields tab (which ignores `weights`).
+  'Wood':         { weights: ['Shields Only'],             ar: -4,   enc: -0.50, costMulti: 0.6,  qualities: ['Brittle', 'Flammable', 'Mundane'] },
 };
+
+// Returns a material's encumbrance modifier for a given base-item category. Malachite and Stalhrim
+// store their enc mod as {Light, Medium} since it differs by weight class; when there's no matching
+// category (e.g. a shield, which has no weight class), the two variants are averaged.
+function getMaterialEncMod(material, category) {
+  if (typeof material.enc === 'number') return material.enc;
+  if (category && material.enc[category] !== undefined) return material.enc[category];
+  const values = Object.values(material.enc);
+  return values.reduce((sum, v) => sum + v, 0) / values.length;
+}
+
+// Base shield types. `rangedDefense` scales 0.5 -> 1 -> 2 with size; `enc`/`cost` are per-shield
+// totals (shields aren't split into body locations the way armor is).
+const SHIELD_TYPES = [
+  { name: 'Small',  ar: 15, bashDamage: '1d5 I',   rangedDefense: 0.5, enc: 2, cost: 50 },
+  { name: 'Medium', ar: 20, bashDamage: '1d5+1 I', rangedDefense: 1,   enc: 4, cost: 100 },
+  { name: 'Large',  ar: 25, bashDamage: '1d5+2 I', rangedDefense: 2,   enc: 6, cost: 150 },
+];
 
 const ARMOR_MATERIAL_NAMES = Object.keys(ARMOR_MATERIALS);
 
