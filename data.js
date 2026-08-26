@@ -133,3 +133,40 @@ const CATEGORY_ORDER = [
   'Two-Handed Ranged',
   'One-Handed Ranged',
 ];
+
+// Spell Scroll levels: `prefix` is prepended to the spell name (empty string = no prefix, the base tier).
+const SPELL_LEVELS = [
+  { name: 'Lesser',    prefix: 'Lesser' },
+  { name: 'Minor',     prefix: 'Minor' },
+  { name: 'Standard',  prefix: '' },
+  { name: 'Major',     prefix: 'Major' },
+  { name: 'Greater',   prefix: 'Greater' },
+  { name: 'Legendary', prefix: 'Legendary' },
+];
+
+const SPELLS = [
+  'Barrier', 'Blade-Mender', 'Crushing Weight', 'Feather-light', 'Fire Barrier', 'Frost Barrier',
+  'Iron-Flesh', 'Leap', 'Rising Force', 'Seal', 'Shield-Mender', 'Shock Barrier', 'Slowfall',
+  'Unhinging', 'Water Breathing', 'Water Walking',
+  'Bind Construct', 'Summon Daedra', 'Summon Daedric Armour', 'Summon Daedric Weapon',
+  'Summon Spirit', 'Sunder Binding',
+  'Cloak of Fire', 'Cloak of Frost', 'Cloak of Lightning', 'Cone of Fire', 'Cone of Frost',
+  'Cone of Lightning', 'Eat Armour', 'Eat Weapon', 'Fireball', 'Fire Bite', 'Fire Bolt',
+  'Fire Rune', 'Fire Storm', 'Frost Ball', 'Frost Bite', 'Frost Bolt', 'Frost Rune', 'Frost Storm',
+  'Lightning Ball', 'Lightning Bolt', 'Lightning Rune', 'Lightning Storm', 'Lightning Touch',
+  'Poison Bloom', 'Poison Bolt', 'Poison Touch', 'Flay Spirit', 'Sap Strength', 'Sap Endurance',
+  'Sap Agility', 'Sap Intelligence', 'Sap Willpower', 'Sap Perception', 'Sap Personality',
+  'Sunbeam', 'Sunburst', 'Wall of Fire', 'Wall of Frost', 'Wall of Lightning', 'Weakness to Fire',
+  'Weakness to Frost', 'Weakness to Magicka', 'Weakness to Shock', 'Weakness to Poison', 'Weary',
+  'Blindness', 'Calming Touch', 'Chameleon', 'Charming Touch', 'Concealment', 'Frenzying Touch',
+  'Illuminate Area', 'Night Eye', 'Paralysis', 'Strike Fear', 'Sanctuary', 'Silence',
+  'Tread Lightly',
+  'Dispel', 'Ethereal Form', 'Magicka Leech', 'Magicka Sight', 'Mark', 'Recall', 'Soul Trap',
+  'Spell Drinker', 'Spell Mirror', 'Spirit Sight', 'Telekinesis', 'Vampiric Touch',
+  'Cure Disease', 'Cure Paralysis', 'Curing Touch', 'Fortify Strength', 'Fortify Endurance',
+  'Fortify Agility', 'Fortify Intelligence', 'Fortify Willpower', 'Fortify Perception',
+  'Fortify Personality', 'Heal', 'Healing Touch', 'Rejuvenate', 'Resistance to Fire',
+  'Resistance to Frost', 'Resistance to Magicka', 'Resistance to Shock', 'Resistance to Poison',
+  'Restore Strength', 'Restore Endurance', 'Restore Agility', 'Restore Intelligence',
+  'Restore Willpower', 'Restore Perception', 'Restore Personality', 'Turn Undead', 'Ward',
+];

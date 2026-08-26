@@ -98,6 +98,48 @@ html, body {
   text-transform: uppercase;
 }
 
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 auto 1.5rem;
+  padding: 0 1.25rem;
+}
+
+.tab-btn {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: var(--gold-bright);
+  background: rgba(0, 0, 0, 0.25);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.tab-btn:hover {
+  border-color: var(--magic-blue);
+}
+
+.tab-btn.active {
+  color: var(--ink);
+  border-color: var(--gold);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
 main {
   max-width: 900px;
   margin: 0 auto;

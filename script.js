@@ -185,3 +185,82 @@ async function copyResult() {
 
 document.getElementById('randomise-btn').addEventListener('click', randomise);
 document.getElementById('copy-btn').addEventListener('click', copyResult);
+
+// --- Tabs ---
+
+document.querySelectorAll('.tab-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach((b) => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+
+    document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active'));
+    document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+  });
+});
+
+// --- Spell Scrolls ---
+
+const levelContainer = document.getElementById('level-options');
+const spellContainer = document.getElementById('spell-options');
+const spellSearch = document.getElementById('spell-search');
+const scrollOutput = document.getElementById('scroll-output');
+const scrollHint = document.getElementById('scroll-hint');
+
+SPELL_LEVELS.forEach((lvl) => buildChip(levelContainer, lvl.name, lvl.name));
+SPELLS.forEach((s) => buildChip(spellContainer, s, s));
+
+spellSearch.addEventListener('input', () => {
+  const term = spellSearch.value.trim().toLowerCase();
+  spellContainer.querySelectorAll('.chip').forEach((chip) => {
+    const label = chip.textContent.trim().toLowerCase();
+    chip.style.display = label.includes(term) ? '' : 'none';
+  });
+});
+
+function randomiseScroll() {
+  scrollHint.textContent = '';
+
+  const allowedLevelNames = getChecked(levelContainer);
+  const levelPool = allowedLevelNames.length
+    ? SPELL_LEVELS.filter((l) => allowedLevelNames.includes(l.name))
+    : SPELL_LEVELS;
+
+  const allowedSpellNames = getChecked(spellContainer);
+  const spellPool = allowedSpellNames.length ? allowedSpellNames : SPELLS;
+
+  if (spellPool.length === 0) {
+    scrollHint.textContent = 'No spells match your current filters.';
+    return;
+  }
+
+  const level = pickRandom(levelPool);
+  const spell = pickRandom(spellPool);
+  const scrollName = level.prefix ? `${level.prefix} ${spell}` : spell;
+
+  scrollOutput.innerHTML = `
+    <h3 class="result-title">${scrollName}</h3>
+    <div class="stat-row"><span>Level</span><strong>${level.name}</strong></div>
+    <div class="stat-row"><span>Spell</span><strong>${spell}</strong></div>
+  `;
+}
+
+async function copyScrollResult() {
+  const text = scrollOutput.innerText.trim();
+  if (!text || scrollOutput.querySelector('.placeholder')) {
+    scrollHint.textContent = 'Nothing to copy yet — randomise first.';
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    scrollHint.textContent = 'Copied to clipboard.';
+  } catch (err) {
+    scrollHint.textContent = 'Could not copy automatically — select and copy manually.';
+  }
+}
+
+document.getElementById('scroll-randomise-btn').addEventListener('click', randomiseScroll);
+document.getElementById('scroll-copy-btn').addEventListener('click', copyScrollResult);

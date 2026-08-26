@@ -31,7 +31,13 @@
   </div>
 </header>
 
+<nav class="tabs" role="tablist">
+  <button class="tab-btn active" type="button" data-tab="weapons" role="tab" aria-selected="true">⚔ Weapons</button>
+  <button class="tab-btn" type="button" data-tab="scrolls" role="tab" aria-selected="false">📜 Spell Scrolls</button>
+</nav>
+
 <main>
+  <section class="tab-panel active" id="tab-weapons">
   <ol class="intro">
     <li>Open a panel below (click its title) if you want to narrow that category down.</li>
     <li>Tick only the specific options you want — leave a panel closed and untouched to allow anything in it.</li>
@@ -75,6 +81,40 @@
   </section>
 
   <p class="hint" id="hint" aria-live="polite"></p>
+  </section>
+
+  <section class="tab-panel" id="tab-scrolls">
+  <ol class="intro">
+    <li>Open a panel below (click its title) if you want to narrow that category down.</li>
+    <li>Tick only the specific levels or spells you want — leave a panel closed and untouched to allow anything in it.</li>
+    <li>Click <strong>Randomise</strong> to roll a Level and a Spell, combined into a scroll name.</li>
+  </ol>
+
+  <details class="panel" id="panel-level">
+    <summary><h2>Level</h2></summary>
+    <div class="chip-grid" id="level-options"></div>
+  </details>
+
+  <details class="panel" id="panel-spells">
+    <summary><h2>Spell</h2></summary>
+    <input type="search" id="spell-search" placeholder="Filter spells by name..." class="item-search" />
+    <div class="chip-grid" id="spell-options"></div>
+  </details>
+
+  <div class="controls">
+    <button id="scroll-randomise-btn" type="button">📜 Randomise</button>
+    <button id="scroll-copy-btn" type="button" class="secondary">Copy</button>
+  </div>
+
+  <section class="output-wrap">
+    <label>Result</label>
+    <div id="scroll-output" class="output-box" role="status" aria-live="polite">
+      <p class="placeholder">Your scroll awaits inscription...</p>
+    </div>
+  </section>
+
+  <p class="hint" id="scroll-hint" aria-live="polite"></p>
+  </section>
 </main>
 
 <footer>
