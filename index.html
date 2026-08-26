@@ -32,18 +32,25 @@
 </header>
 
 <nav class="tabs" role="tablist">
-  <button class="tab-btn active" type="button" data-tab="weapons" role="tab" aria-selected="true">⚔ Weapons</button>
+  <button class="tab-btn active" type="button" data-tab="welcome" role="tab" aria-selected="true">🏠 Welcome</button>
+  <button class="tab-btn" type="button" data-tab="weapons" role="tab" aria-selected="false">⚔ Weapons</button>
   <button class="tab-btn" type="button" data-tab="scrolls" role="tab" aria-selected="false">📜 Spell Scrolls</button>
 </nav>
 
 <main>
-  <section class="tab-panel active" id="tab-weapons">
-  <ol class="intro">
-    <li>Open a panel below (click its title) if you want to narrow that category down.</li>
-    <li>Tick only the specific options you want — leave a panel closed and untouched to allow anything in it.</li>
-    <li>Click <strong>Randomise</strong> to roll a Quality, Material, Item, and Enchantment, with full stats and cost worked out automatically.</li>
-  </ol>
+  <section class="tab-panel active" id="tab-welcome">
+  <div class="welcome">
+    <h2>Welcome to Tamriel Forge</h2>
+    <p>This tool rolls up randomised Elder Scrolls-style items for tabletop &amp; MMO worldbuilding, complete with full stats and cost.</p>
+    <ul class="intro">
+      <li><strong>⚔ Weapons</strong> — roll a Quality, Material, Item Type, and Enchantment, with damage, penetration, range, encumbrance and cost worked out automatically.</li>
+      <li><strong>📜 Spell Scrolls</strong> — roll a Level and a Spell and combine them into a scroll name.</li>
+    </ul>
+    <p>Pick a tab above to get started. Inside each tab, open a panel and tick only the specific options you want — leave a panel closed and untouched to allow anything in it — then click <strong>Randomise</strong>.</p>
+  </div>
+  </section>
 
+  <section class="tab-panel" id="tab-weapons">
   <details class="panel" id="panel-quality">
     <summary><h2>Quality</h2></summary>
     <div class="chip-grid" id="quality-options"></div>
@@ -84,12 +91,6 @@
   </section>
 
   <section class="tab-panel" id="tab-scrolls">
-  <ol class="intro">
-    <li>Open a panel below (click its title) if you want to narrow that category down.</li>
-    <li>Tick only the specific levels or spells you want — leave a panel closed and untouched to allow anything in it.</li>
-    <li>Click <strong>Randomise</strong> to roll a Level and a Spell, combined into a scroll name.</li>
-  </ol>
-
   <details class="panel" id="panel-level">
     <summary><h2>Level</h2></summary>
     <div class="chip-grid" id="level-options"></div>
